@@ -46,8 +46,6 @@ describe RealtimeService do
         jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
         post "/broadcast", headers: HTTP::Headers{"Content-Type" => "application/json"}, body: {token: jwt}.to_json
 
-        puts response.body
-
         response.status_code.should eq 200
         json = JSON.parse(response.body)
         json["message"].should eq("Success")

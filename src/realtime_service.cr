@@ -11,7 +11,7 @@ Dotenv.load unless Kemal.config.env == "production"
 # HTTP Client: https://github.com/mamantoha/crest
 # JWT: https://github.com/crystal-community/jwt
 
-SOCKETS = {} of String => Array(HTTP::WebSocket)
+SOCKETS = {} of String => Set(HTTP::WebSocket)
 
 module RealtimeService
   get "/" do |env|
@@ -57,35 +57,46 @@ module RealtimeService
   end
 
   ws "/subscribe" do |socket|
+    puts "Socket connected".colorize(:green)
+
+    socket.on_message do |message|
+      puts message.colorize(:blue)
+
+      data = JSON.parse(message)
+
+      # If message is authing, store in hash
+      if data["type"].to_s == "authenticate"
+        token = data["payload"]["token"].to_s
+
+        begin
+          payload = self.decode_jwt(token)
+          payload["channels"].as(Array).each do |channel|
+            channel = channel.as(String)
+            if SOCKETS.has_key?(channel)
+              SOCKETS[channel] << socket
+            else
+              SOCKETS[channel] = Set{socket}
+            end
+
+            socket.send({message: "subscribed", channel: channel}.to_json)
+          end
+        rescue JWT::DecodeError
+          socket.close
+        end
+      end
+    end
+
+    # Remove clients from the list when it's closed
+    socket.on_close do
+      SOCKETS.each do |channel, set|
+        if set.includes?(socket)
+          set.delete(socket)
+
+          puts "Socket disconnected from #{channel}!".colorize(:yellow)
+        end
+      end
+    end
   end
-
-  # ws "/ws" do |socket|
-  #   puts "Socket connected".colorize(:green)
-
-  #   # Broadcast each message to all clients
-  #   socket.on_message do |message|
-  #     puts message.colorize(:blue)
-
-  #     data = JSON.parse(message)
-
-  #     # If message is authing, store in hash
-  #     if data["type"].to_s == "authenticate"
-  #       # if socket is already authenticated with a different token re-auth
-  #       if existing_token = SOCKETS.key?(socket)
-  #         SOCKETS.delete(existing_token)
-  #       end
-  #       token = data["payload"]["token"].to_s
-  #       SOCKETS[token] = socket
-  #     end
-  #   end
-
-  #   # Remove clients from the list when it's closed
-  #   socket.on_close do
-  #     token = SOCKETS.key(socket)
-  #     puts "Token: #{token} disconnected!".colorize(:yellow)
-  #     SOCKETS.delete token
-  #   end
-  # end
 
   def self.decode_jwt(token : String)
     payload, header = JWT.decode(token, ENV["JWT_SECRET"], "HS512")

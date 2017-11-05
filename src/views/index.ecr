@@ -7,11 +7,11 @@
   <div>connecting</div>
 
   <script type="text/javascript">
-    var HOST = location.origin.replace(/^http/, 'ws')+"/ws";
+    var HOST = location.origin.replace(/^http/, 'ws')+"/subscribe";
     var ws = new WebSocket(HOST);
     var msg = {
       type: 'authenticate',
-      payload: { token: 'XXX' }
+      payload: { token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJjaGFubmVscyI6WyJ1c2VyOjEiXX0.2YCGxdsZPyle-sJy5Kp7AwUqQ0AHkM-apIUFYK0U4KVNx3nDyQMWcJRlQqrcECzuGJSXwBaZ7t-BatQTGgFWMQ' }
     };
     ws.onopen = function(event) {
       ws.send(JSON.stringify(msg));
