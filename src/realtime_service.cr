@@ -8,9 +8,6 @@ require "./realtime_service/*"
 
 Dotenv.load unless Kemal.config.env == "production"
 
-# HTTP Client: https://github.com/mamantoha/crest
-# JWT: https://github.com/crystal-community/jwt
-
 SOCKETS = {} of String => Set(HTTP::WebSocket)
 
 module RealtimeService
