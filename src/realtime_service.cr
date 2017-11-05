@@ -22,7 +22,7 @@ module RealtimeService
       channel = env.params.query["channel"].as(String)
 
       SOCKETS[channel].each do |socket|
-        socket.send({msg: message}.to_json)
+        socket.send({event: "ping", data: message}.to_json)
       end
     rescue KeyError
       puts "Key error!".colorize(:red)
@@ -75,7 +75,7 @@ module RealtimeService
               SOCKETS[channel] = Set{socket}
             end
 
-            socket.send({message: "subscribed", channel: channel}.to_json)
+            socket.send({event: "subscribed", data: {channel: channel}.to_json}.to_json)
           end
         rescue JWT::DecodeError
           socket.close("Not Authorized!")
