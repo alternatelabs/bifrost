@@ -78,7 +78,7 @@ module RealtimeService
             socket.send({message: "subscribed", channel: channel}.to_json)
           end
         rescue JWT::DecodeError
-          socket.close
+          socket.close("Not Authorized!")
         end
       end
     end
