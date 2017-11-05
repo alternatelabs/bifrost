@@ -2,7 +2,14 @@ require "kemal"
 require "http/web_socket"
 require "json"
 require "colorize"
+require "dotenv"
+require "jwt"
 require "./realtime_service/*"
+
+Dotenv.load unless Kemal.config.env == "production"
+
+# HTTP Client: https://github.com/mamantoha/crest
+# JWT: https://github.com/crystal-community/jwt
 
 SOCKETS = {} of String => HTTP::WebSocket
 
@@ -20,6 +27,19 @@ module RealtimeService
       SOCKETS[token].send(message)
     rescue KeyError
       puts "Key error!".colorize(:red)
+    end
+  end
+
+  post "/broadcast" do |env|
+    begin
+      token = env.params.json["token"].as(String)
+      self.decode_jwt(token)
+    rescue JWT::VerificationError
+      env.response.status_code = 400
+      {error: "Bad signature"}.to_json
+    rescue JWT::ExpiredSignatureError
+      env.response.status_code = 400
+      {error: "Expired signature"}.to_json
     end
   end
 
@@ -49,6 +69,11 @@ module RealtimeService
       puts "Token: #{token} disconnected!".colorize(:yellow)
       SOCKETS.delete token
     end
+  end
+
+  def self.decode_jwt(token : String)
+    payload, header = JWT.decode(token, ENV["JWT_SECRET"], "HS512")
+    payload
   end
 end
 

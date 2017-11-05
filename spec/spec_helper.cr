@@ -1,4 +1,5 @@
 ENV["KEMAL_ENV"] = "test"
 require "spec-kemal"
 require "json"
+require "jwt"
 require "../src/realtime_service"

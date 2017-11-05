@@ -1,5 +1,13 @@
 version: 1.0
 shards:
+  dotenv:
+    github: gdotdesign/cr-dotenv
+    version: 0.1.0
+
+  jwt:
+    github: crystal-community/jwt
+    version: 0.2.2
+
   kemal:
     github: kemalcr/kemal
     version: 0.21.0

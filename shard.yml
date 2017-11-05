@@ -15,6 +15,10 @@ dependencies:
   kemal:
     github: kemalcr/kemal
     version: ~> 0.21.0
+  jwt:
+    github: crystal-community/jwt
+  dotenv:
+    github: gdotdesign/cr-dotenv
 
 crystal: 0.23.1
 
