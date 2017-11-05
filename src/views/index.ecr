@@ -21,7 +21,7 @@
       console.log("WSM", event.data);
     };
 
-    ws.close = function(event) {
+    ws.onclose = function(event) {
       console.log("WS Closed", event);
     };
   </script>
