@@ -1,0 +1,25 @@
+<html>
+<head>
+  <title>Sockets</title>
+</head>
+<body>
+
+  <div>connecting</div>
+
+  <script type="text/javascript">
+    var HOST = location.origin.replace(/^http/, 'ws')+"/ws";
+    var ws = new WebSocket(HOST);
+    var msg = {
+      type: 'authenticate',
+      payload: { token: 'XXX' }
+    };
+    ws.onopen = function(event) {
+      ws.send(JSON.stringify(msg));
+    };
+
+    ws.onmessage = function(event) {
+      console.log("WSM", event.data);
+    };
+  </script>
+</body>
+</html>

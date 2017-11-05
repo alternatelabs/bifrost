@@ -1,0 +1,21 @@
+name: realtime_service
+version: 0.1.0
+
+authors:
+  - Pete Hawkins <ph@dawsonandrews.com>
+
+targets:
+  realtime_service:
+    main: src/realtime_service.cr
+
+dependencies:
+  spec-kemal:
+    github: kemalcr/spec-kemal
+    branch: master
+  kemal:
+    github: kemalcr/kemal
+    version: ~> 0.21.0
+
+crystal: 0.23.1
+
+license: MIT
