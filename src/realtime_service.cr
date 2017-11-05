@@ -41,7 +41,7 @@ module RealtimeService
 
       if SOCKETS.has_key?(channel)
         SOCKETS[channel].each do |socket|
-          socket.send(payload["message"].as(String))
+          socket.send(payload["message"].as(Hash).to_json)
           deliveries += 1
         end
       end
