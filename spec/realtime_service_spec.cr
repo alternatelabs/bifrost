@@ -39,10 +39,14 @@ describe RealtimeService do
     context "valid JWT" do
       it "returns success" do
         payload = {
-          exp: Time.now.epoch + 3600,
+          exp:     Time.now.epoch + 3600,
+          channel: "user:12",
+          message: {test: "test"}.to_json,
         }
         jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
         post "/broadcast", headers: HTTP::Headers{"Content-Type" => "application/json"}, body: {token: jwt}.to_json
+
+        puts response.body
 
         response.status_code.should eq 200
         json = JSON.parse(response.body)
