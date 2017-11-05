@@ -62,8 +62,8 @@ module RealtimeService
       data = JSON.parse(message)
 
       # If message is authing, store in hash
-      if data["type"].to_s == "authenticate"
-        token = data["payload"]["token"].to_s
+      if data["event"].to_s == "authenticate"
+        token = data["data"].to_s
 
         begin
           payload = self.decode_jwt(token)
@@ -80,6 +80,10 @@ module RealtimeService
         rescue JWT::DecodeError
           socket.close("Not Authorized!")
         end
+      end
+
+      if data["event"].to_s == "ping"
+        socket.send({event: "pong"}.to_json)
       end
     end
 

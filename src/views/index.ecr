@@ -9,12 +9,17 @@
   <script type="text/javascript">
     var HOST = location.origin.replace(/^http/, 'ws')+"/subscribe";
     var ws = new WebSocket(HOST);
+    var pingInterval;
     var msg = {
-      type: 'authenticate',
-      payload: { token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJjaGFubmVscyI6WyJ1c2VyOjEiXX0.2YCGxdsZPyle-sJy5Kp7AwUqQ0AHkM-apIUFYK0U4KVNx3nDyQMWcJRlQqrcECzuGJSXwBaZ7t-BatQTGgFWMQ' }
+      event: 'authenticate',
+      data: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJjaGFubmVscyI6WyJ1c2VyOjEiXX0.2YCGxdsZPyle-sJy5Kp7AwUqQ0AHkM-apIUFYK0U4KVNx3nDyQMWcJRlQqrcECzuGJSXwBaZ7t-BatQTGgFWMQ'
     };
     ws.onopen = function(event) {
       ws.send(JSON.stringify(msg));
+
+      pingInterval = setInterval(() => {
+        ws.send(JSON.stringify({ event: "ping" }));
+      }, 5000);
     };
 
     ws.onmessage = function(event) {
@@ -23,6 +28,7 @@
 
     ws.onclose = function(event) {
       console.log("WS Closed", event);
+      clearInterval(pingInterval);
     };
   </script>
 </body>
