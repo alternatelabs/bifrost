@@ -31,15 +31,16 @@ module RealtimeService
   end
 
   post "/broadcast" do |env|
+    env.response.content_type = "text/html"
+
     begin
       token = env.params.json["token"].as(String)
       self.decode_jwt(token)
-    rescue JWT::VerificationError
+
+      {message: "Success"}.to_json
+    rescue JWT::DecodeError
       env.response.status_code = 400
       {error: "Bad signature"}.to_json
-    rescue JWT::ExpiredSignatureError
-      env.response.status_code = 400
-      {error: "Expired signature"}.to_json
     end
   end
 
