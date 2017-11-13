@@ -1,0 +1,18 @@
+{
+  "name": "Crystal Realtime Service",
+  "description": "A simple websocket service to broadcast realtime events powered by JWTs",
+  "repository": "https://github.com/heroku/node-js-sample",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "buildpacks": [
+    {
+      "url": "https://github.com/crystal-lang/heroku-buildpack-crystal.git"
+    }
+  ],
+  "env": {
+    "JWT_SECRET": {
+      "description": "A secret key for verifying the integrity of signed JWTs. Use the same key on your server side application.",
+      "generator": "secret"
+    }
+  },
+  "keywords": ["crystal", "websocket", "realtime"]
+}
