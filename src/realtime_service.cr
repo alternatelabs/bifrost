@@ -9,11 +9,19 @@ require "./realtime_service/*"
 Dotenv.load unless Kemal.config.env == "production"
 
 SOCKETS = {} of String => Set(HTTP::WebSocket)
+STATS   = {} of String => Int32
+STATS["deliveries"] = 0
 
 module RealtimeService
   get "/" do |env|
     env.response.content_type = "text/html"
     render "src/views/index.ecr"
+  end
+
+  get "/info.json" do |env|
+    env.response.content_type = "application/json"
+    new_stats = STATS.merge({"connected" => SOCKETS.size})
+    {stats: new_stats}.to_json
   end
 
   get "/ping" do |env|
@@ -23,6 +31,7 @@ module RealtimeService
 
       SOCKETS[channel].each do |socket|
         socket.send({event: "ping", data: message}.to_json)
+        STATS["deliveries"] += 1
       end
     rescue KeyError
       puts "Key error!".colorize(:red)
@@ -30,7 +39,7 @@ module RealtimeService
   end
 
   post "/broadcast" do |env|
-    env.response.content_type = "text/html"
+    env.response.content_type = "application/json"
 
     begin
       token = env.params.json["token"].as(String)
@@ -45,6 +54,8 @@ module RealtimeService
           deliveries += 1
         end
       end
+
+      STATS["deliveries"] += deliveries
 
       {message: "Success", deliveries: deliveries}.to_json
     rescue JWT::DecodeError
@@ -76,6 +87,7 @@ module RealtimeService
             end
 
             socket.send({event: "subscribed", data: {channel: channel}.to_json}.to_json)
+            STATS["deliveries"] += 1
           end
         rescue JWT::DecodeError
           socket.close("Not Authorized!")

@@ -1,10 +1,22 @@
+require "json"
 require "./spec_helper"
 
 describe RealtimeService do
-  # You can use get,post,put,patch,delete to call the corresponding route.
-  it "renders /" do
-    get "/"
-    response.body.should contain "connecting"
+  describe "GET /" do
+    # You can use get,post,put,patch,delete to call the corresponding route.
+    it "renders" do
+      get "/"
+      response.body.should contain "connecting"
+    end
+  end
+
+  describe "GET /info.json" do
+    it "returns stats" do
+      get "info.json"
+      resp = JSON.parse(response.body)
+      resp["stats"]["connected"].should eq 0
+      resp["stats"]["deliveries"].should eq 0
+    end
   end
 
   describe "POST /broadcast" do
