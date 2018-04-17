@@ -19,7 +19,7 @@ Bifrost is powered by [JWTs](https://jwt.io/), you can use the JWT library for t
 Create a JWT that can be sent to the client side for your end user to connect to the websocket with. This should list all of the channels that user is allowed to subscribe to.
 
 ```ruby
-get "/api/realtime-token" do
+get "/api/bifrost-token" do
   authenticate_user!
   payload = { channels: ["user:#{current_user.id}", "global"] }
   jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
@@ -45,7 +45,7 @@ let pingInterval;
 // subscribing your user to the channels your server side app allows them to
 // connect to
 ws.onopen = function() {
-  axios.get("/api/realtime-token").then((resp) => {
+  axios.get("/api/bifrost-token").then((resp) => {
     const jwtToken = resp.data.token;
     const msg = {
       event: "authenticate",
