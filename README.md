@@ -14,14 +14,20 @@ Crystal realtime service is powered by [JWTs](https://jwt.io/), you can use the 
 
 **Make sure your server side JWT secret is shared with the realtime service to validate JWTs.**
 
-### Subscribe clients to channels
+### 1. Create an API endpoint in your application that can give users a realtime token
 
 Create a JWT that can be sent to the client side for your end user to connect to the websocket with. This should list all of the channels that user is allowed to subscribe to.
 
 ```ruby
-payload = { channels: ["user:#{current_user.id}", "global"] }
-jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
+get "/api/realtime-token" do
+  authenticate_user!
+  payload = { channels: ["user:#{current_user.id}", "global"] }
+  jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
+  { token: jwt }.to_json
+end
 ```
+
+### 2. Subscribe clients to channels
 
 On the client side open up a websocket and send an authentication message with the generated JWT, this will subscribe the user to the allowed channels.
 
@@ -33,18 +39,21 @@ let ws = new ReconnectingWebSocket(`${process.env.REALTIME_SERVICE_WSS}/subscrib
 let pingInterval;
 
 ws.onopen = function() {
-  const msg = {
-    event: "authenticate",
-    data: jwtToken, // Your server generated token with allowed channels
-  };
-  ws.send(JSON.stringify(msg));
+  axios.get("/api/realtime-token").then((resp) => {
+    const jwtToken = resp.data.token;
+    const msg = {
+      event: "authenticate",
+      data: jwtToken, // Your server generated token with allowed channels
+    };
+    ws.send(JSON.stringify(msg));
 
-  console.log("WS Connected");
+    console.log("WS Connected");
 
-  // Send a ping every so often to keep the socket alive
-  pingInterval = setInterval(() => {
-    ws.send(JSON.stringify({ event: "ping" }));
-  }, 10000);
+    // Send a ping every so often to keep the socket alive
+    pingInterval = setInterval(() => {
+      ws.send(JSON.stringify({ event: "ping" }));
+    }, 10000);
+  });
 };
 
 ws.onmessage = function(event) {
@@ -77,7 +86,7 @@ ws.onclose = function(event) {
 };
 ```
 
-### Broadcast messages from the server
+### 3. Broadcast messages from the server
 
 Generate a token and send it to the realtime service
 
@@ -101,7 +110,11 @@ if req.status > 206
 end
 ```
 
-## Developing
+### 🤓 You're done
+
+That's all you need to start broadcasting realtime events directly to clients in an authenticated manner. For now there is no planned support for bi-directional communication, it adds a lot of complications and for most apps it's not necessary.
+
+## Contributing
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
