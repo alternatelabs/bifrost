@@ -19,8 +19,10 @@ module RealtimeService
   end
 
   get "/info.json" do |env|
+    connected_clients = 0
+    SOCKETS.each { |k, v| connected_clients += v.size }
     env.response.content_type = "application/json"
-    new_stats = STATS.merge({"connected" => SOCKETS.size})
+    new_stats = STATS.merge({"connected" => connected_clients})
     {stats: new_stats}.to_json
   end
 
