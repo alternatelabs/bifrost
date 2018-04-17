@@ -6,7 +6,7 @@ describe Bifrost do
     # You can use get,post,put,patch,delete to call the corresponding route.
     it "renders" do
       get "/"
-      response.body.should contain "connecting"
+      response.body.should contain "Bifröst is an open source websocket server"
     end
   end
 
