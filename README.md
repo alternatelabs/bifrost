@@ -2,6 +2,8 @@
 
 Simple and fast websocket service written in Crystal to broadcast realtime events powered by JWTs
 
+[![Build Status](https://travis-ci.org/alternatelabs/bifrost.svg?branch=master)](https://travis-ci.org/alternatelabs/bifrost)
+
 ## Quickstart
 
 Get started by deploying this service to heroku.

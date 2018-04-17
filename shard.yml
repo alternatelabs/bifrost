@@ -14,12 +14,12 @@ dependencies:
     branch: master
   kemal:
     github: kemalcr/kemal
-    version: ~> 0.21.0
+    version: ~> 0.22.0
   jwt:
     github: crystal-community/jwt
   dotenv:
     github: gdotdesign/cr-dotenv
 
-crystal: 0.23.1
+crystal: 0.24.2
 
 license: MIT
