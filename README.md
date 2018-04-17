@@ -1,4 +1,4 @@
-# Bifrost
+# Bifröst
 
 Simple and fast websocket service written in Crystal to broadcast realtime events powered by JWTs
 
