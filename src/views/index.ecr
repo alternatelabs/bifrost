@@ -1,35 +1,12 @@
 <html>
 <head>
-  <title>Sockets</title>
+  <title>Bifröst</title>
+  <meta charset="UTF-8">
 </head>
 <body>
 
-  <div>connecting</div>
+  <h1>Bifröst</h1>
 
-  <script type="text/javascript">
-    var HOST = location.origin.replace(/^http/, 'ws')+"/subscribe";
-    var ws = new WebSocket(HOST);
-    var pingInterval;
-    var msg = {
-      event: 'authenticate',
-      data: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJjaGFubmVscyI6WyJ1c2VyOjEiXX0.2YCGxdsZPyle-sJy5Kp7AwUqQ0AHkM-apIUFYK0U4KVNx3nDyQMWcJRlQqrcECzuGJSXwBaZ7t-BatQTGgFWMQ'
-    };
-    ws.onopen = function(event) {
-      ws.send(JSON.stringify(msg));
-
-      pingInterval = setInterval(() => {
-        ws.send(JSON.stringify({ event: "ping" }));
-      }, 5000);
-    };
-
-    ws.onmessage = function(event) {
-      console.log("WSM", event.data);
-    };
-
-    ws.onclose = function(event) {
-      console.log("WS Closed", event);
-      clearInterval(pingInterval);
-    };
-  </script>
+  <p><a href="https://github.com/alternatelabs/bifrost">Bifröst is an open source websocket server</a> written in Crystal and powered by JWTs.</p>
 </body>
 </html>

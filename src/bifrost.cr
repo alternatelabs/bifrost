@@ -18,6 +18,15 @@ module Bifrost
     render "src/views/index.ecr"
   end
 
+  get "/test" do |env|
+    if Kemal.config.env == "development"
+      env.response.content_type = "text/html"
+      render "src/views/test.ecr"
+    else
+      render_404
+    end
+  end
+
   get "/info.json" do |env|
     connected_clients = 0
     SOCKETS.each { |k, v| connected_clients += v.size }
