@@ -38,6 +38,12 @@ import ReconnectingWebSocket from "reconnectingwebsocket";
 let ws = new ReconnectingWebSocket(`${process.env.REALTIME_SERVICE_WSS}/subscribe`); // URL your crystal realtime service is running on
 let pingInterval;
 
+// Step 1
+// ======
+// When you first open the websocket the goal is to request a signed realtime
+// token from your server side application and then authenticate with the
+// realtime service, subscribing your user to the channels your server side
+// app allows them to connect to.
 ws.onopen = function() {
   axios.get("/api/realtime-token").then((resp) => {
     const jwtToken = resp.data.token;
@@ -56,6 +62,11 @@ ws.onopen = function() {
   });
 };
 
+// Step 2
+// ======
+// Upon receiving a message you can check the event name and ignore subscribed
+// and pong events, everything else will be an event sent by your server side
+// app.
 ws.onmessage = function(event) {
   const msg = JSON.parse(event.data);
 
@@ -70,6 +81,8 @@ ws.onmessage = function(event) {
       break;
     }
     default: {
+      // Note:
+      // We advise you broadcast messages with a data key
       const eventData = JSON.parse(msg.data);
       console.log(`Realtime: ${msg.event}`, eventData);
 
@@ -80,6 +93,9 @@ ws.onmessage = function(event) {
   }
 };
 
+// Step 3
+// ======
+// Do some cleanup when the socket closes
 ws.onclose = function(event) {
   console.error("WS Closed", event);
   clearInterval(pingInterval);
