@@ -4,7 +4,7 @@ require "json"
 require "colorize"
 require "dotenv"
 require "jwt"
-require "./realtime_service/*"
+require "./bifrost/*"
 
 Dotenv.load unless Kemal.config.env == "production"
 
@@ -12,7 +12,7 @@ SOCKETS = {} of String => Set(HTTP::WebSocket)
 STATS   = {} of String => Int32
 STATS["deliveries"] = 0
 
-module RealtimeService
+module Bifrost
   get "/" do |env|
     env.response.content_type = "text/html"
     render "src/views/index.ecr"

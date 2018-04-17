@@ -1,6 +1,6 @@
-# Crystal Realtime Service
+# Bifrost
 
-A simple websocket service to broadcast realtime events powered by JWTs
+Simple and fast websocket service written in Crystal to broadcast realtime events powered by JWTs
 
 ## Quickstart
 
@@ -10,9 +10,9 @@ Get started by deploying this service to heroku.
 
 ## Usage
 
-Crystal realtime service is powered by [JWTs](https://jwt.io/), you can use the JWT library for the language of your choice, the examples will be in [Ruby](https://github.com/jwt/ruby-jwt).
+Bifrost is powered by [JWTs](https://jwt.io/), you can use the JWT library for the language of your choice, the examples will be in [Ruby](https://github.com/jwt/ruby-jwt).
 
-**Make sure your server side JWT secret is shared with the realtime service to validate JWTs.**
+**Make sure your server side JWT secret is shared with your bifrost server to validate JWTs.**
 
 ### 1. Create an API endpoint in your application that can give users a realtime token
 
@@ -35,15 +35,15 @@ On the client side open up a websocket and send an authentication message with t
 // Recommend using ReconnectingWebSocket to automatically reconnect websockets if you deploy the server or have any network disconnections
 import ReconnectingWebSocket from "reconnectingwebsocket";
 
-let ws = new ReconnectingWebSocket(`${process.env.REALTIME_SERVICE_WSS}/subscribe`); // URL your crystal realtime service is running on
+let ws = new ReconnectingWebSocket(`${process.env.BIFROST_WSS_URL}/subscribe`); // URL your bifrost server is running on
 let pingInterval;
 
 // Step 1
 // ======
 // When you first open the websocket the goal is to request a signed realtime
-// token from your server side application and then authenticate with the
-// realtime service, subscribing your user to the channels your server side
-// app allows them to connect to.
+// token from your server side application and then authenticate with bifrost,
+// subscribing your user to the channels your server side app allows them to
+// connect to
 ws.onopen = function() {
   axios.get("/api/realtime-token").then((resp) => {
     const jwtToken = resp.data.token;
@@ -77,14 +77,14 @@ ws.onmessage = function(event) {
       break;
     }
     case "pong": {
-      // console.log("Realtime pong");
+      // console.log("Bifrost pong");
       break;
     }
     default: {
       // Note:
       // We advise you broadcast messages with a data key
       const eventData = JSON.parse(msg.data);
-      console.log(`Realtime: ${msg.event}`, eventData);
+      console.log(`Bifrost msg: ${msg.event}`, eventData);
 
       if (msg.event === "new_item") {
         console.log("new item!", eventData);
@@ -104,7 +104,7 @@ ws.onclose = function(event) {
 
 ### 3. Broadcast messages from the server
 
-Generate a token and send it to the realtime service
+Generate a token and send it to bifrost
 
 ```ruby
 data = {
@@ -116,23 +116,23 @@ data = {
   exp: Time.zone.now.to_i + 1.hour
 }
 jwt = JWT.encode(data, ENV["JWT_SECRET"], "HS512")
-url = ENV.fetch("REALTIME_SERVICE_URL")
+url = ENV.fetch("BIFROST_URL")
 url += "/broadcast"
 
 req = HTTP.post(url, json: { token: jwt })
 
 if req.status > 206
-  raise "Error communicating with Realtime service on URL: #{url}"
+  raise "Error communicating with Bifrost server on URL: #{url}"
 end
 ```
 
 ### 🚀 You're done
 
-That's all you need to start broadcasting realtime events directly to clients in an authenticated manner. For now there is no planned support for bi-directional communication, it adds a lot of complications and for most apps it's not necessary.
+That's all you need to start broadcasting realtime events directly to clients in an authenticated manner. Despite the name, there is no planned support for bi-directional communication, it adds a lot of complications and for most apps it's simply not necessary.
 
 #### `GET /info.json`
 
-A simple endpoint that returns basic data about the current state. As all sockets are persisted in memory if you restart the server or deploy an update it will lose track of all stats.
+An endpoint that returns basic stats. As all sockets are persisted in memory if you restart the server or deploy an update the stats will reset.
 
 ```json
 {

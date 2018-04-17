@@ -1,3 +1,3 @@
-module RealtimeService
+module Bifrost
   VERSION = "0.1.0"
 end

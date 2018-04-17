@@ -2,5 +2,5 @@
 /lib/
 /bin/
 /.shards/
-/realtime_service
+/bifrost
 /.env

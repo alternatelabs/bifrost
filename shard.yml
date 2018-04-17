@@ -1,12 +1,12 @@
-name: realtime_service
+name: bifrost
 version: 0.1.0
 
 authors:
-  - Pete Hawkins <ph@dawsonandrews.com>
+  - Pete Hawkins <pete@alternatelabs.co>
 
 targets:
-  realtime_service:
-    main: src/realtime_service.cr
+  bifrost:
+    main: src/bifrost.cr
 
 dependencies:
   spec-kemal:
