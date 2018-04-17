@@ -11,7 +11,11 @@
     "JWT_SECRET": {
       "description": "A secret key for verifying the integrity of signed JWTs. Use the same key on your server side application.",
       "generator": "secret"
-    }
+    },
+    "KEMAL_ENV": {
+      "description": "Set the web server environment, setting this to anything other than production may have security consequences!",
+      "value": "production"
+    },
   },
   "keywords": ["crystal", "websocket", "realtime"]
 }
