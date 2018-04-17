@@ -70,11 +70,11 @@ ws.onmessage = function(event) {
       break;
     }
     default: {
-      const evenData = JSON.parse(msg.data);
-      console.log(`Realtime: ${msg.event}`, evenData);
+      const eventData = JSON.parse(msg.data);
+      console.log(`Realtime: ${msg.event}`, eventData);
 
       if (msg.event === "new_item") {
-        console.log("new item!", evenData);
+        console.log("new item!", eventData);
       }
     }
   }
@@ -110,9 +110,22 @@ if req.status > 206
 end
 ```
 
-### 🤓 You're done
+### 🚀 You're done
 
 That's all you need to start broadcasting realtime events directly to clients in an authenticated manner. For now there is no planned support for bi-directional communication, it adds a lot of complications and for most apps it's not necessary.
+
+#### `GET /info.json`
+
+A simple endpoint that returns basic data about the current state. As all sockets are persisted in memory if you restart the server or deploy an update it will lose track of all stats.
+
+```json
+{
+  "stats":{
+    "deliveries": 117,
+    "connected": 21
+  }
+}
+```
 
 ## Contributing
 
