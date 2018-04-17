@@ -16,14 +16,14 @@ Crystal realtime service is powered by [JWTs](https://jwt.io/), you can use the 
 
 ### Subscribe clients to channels
 
-Create a JWT that can be sent to the client side  for your end user to connect to the websocket with. This should list all of the channels that user is allowed to subscribe to.
+Create a JWT that can be sent to the client side for your end user to connect to the websocket with. This should list all of the channels that user is allowed to subscribe to.
 
 ```ruby
 payload = { channels: ["user:#{current_user.id}", "global"] }
 jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
 ```
 
-One the client side open up a websocket and send an authentication message with the generated JWT, this will subscribe the user to the channels allowed. (Use )
+On the client side open up a websocket and send an authentication message with the generated JWT, this will subscribe the user to the allowed channels.
 
 ```js
 // Recommend using ReconnectingWebSocket to automatically reconnect websockets if you deploy the server or have any network disconnections
