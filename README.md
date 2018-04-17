@@ -4,7 +4,7 @@ A simple websocket service to broadcast realtime events powered by JWTs
 
 ## Quickstart
 
-You can deploy this service straight to heroku and skip most of the setup.
+Get started by deploying this service to heroku.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
