@@ -18,6 +18,8 @@ Bifrost is powered by [JWTs](https://jwt.io/), you can use the JWT library for t
 
 ### 1. Create an API endpoint in your application that can give users a realtime token
 
+*If you use Ruby we have a [bifrost-client gem](https://github.com/alternatelabs/bifrost-ruby-client) available to help simplify things.*
+
 Create a JWT that can be sent to the client side for your end user to connect to the websocket with. This should list all of the channels that user is allowed to subscribe to.
 
 ```ruby
