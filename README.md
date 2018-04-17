@@ -1,8 +1,14 @@
 # Bifröst
 
-Simple and fast websocket service written in Crystal to broadcast realtime events powered by JWTs
+Bifröst is a standalone websocket server written in Crystal. It’s easy to use and works with any server side language that can use [JSON Web Tokens](https://jwt.io/).
 
 [![Build Status](https://travis-ci.org/alternatelabs/bifrost.svg?branch=master)](https://travis-ci.org/alternatelabs/bifrost)
+
+## Why use Bifröst?
+
+Tools like [ActionCable](https://github.com/rails/rails/tree/master/actioncable) seamlessly integrate websockets into your web framework but can put stress on your web servers and consume a lot of memory, making your application harder to deploy and scale.
+
+Crystal delivers blazing fast performance with minimal memory footprint so Bifröst can handle thousands of websocket connections on a tiny VPS or hobby dyno on heroku.
 
 ## Quickstart
 
