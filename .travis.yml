@@ -1,4 +1,5 @@
 language: crystal
 env:
-- JWT_SECRET=ba285ec0135d950e39643e8cd2f086f81f41fc569fb299d00bdee5e125e98a3fb2940b5a7bc40e35a18ca52c9d8670cdab28ba3398db3fcedcd285d6236b7a36
-- KEMAL_ENV=test
+  global:
+    - JWT_SECRET=ba285ec0135d950e39643e8cd2f086f81f41fc569fb299d00bdee5e125e98a3fb2940b5a7bc40e35a18ca52c9d8670cdab28ba3398db3fcedcd285d6236b7a36
+    - KEMAL_ENV=test
