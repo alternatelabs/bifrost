@@ -21,6 +21,8 @@ module Bifrost
   get "/test" do |env|
     if Kemal.config.env == "development"
       env.response.content_type = "text/html"
+      allowed_channels = {channels: ["user:1"]}
+      test_token = JWT.encode(allowed_channels, ENV["JWT_SECRET"], "HS512")
       render "src/views/test.ecr"
     else
       render_404

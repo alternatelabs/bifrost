@@ -13,7 +13,7 @@
     var pingInterval;
     var msg = {
       event: 'authenticate',
-      data: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJjaGFubmVscyI6WyJ1c2VyOjEiXX0.2YCGxdsZPyle-sJy5Kp7AwUqQ0AHkM-apIUFYK0U4KVNx3nDyQMWcJRlQqrcECzuGJSXwBaZ7t-BatQTGgFWMQ'
+      data: '<%= test_token %>'
     };
     ws.onopen = function(event) {
       ws.send(JSON.stringify(msg));
