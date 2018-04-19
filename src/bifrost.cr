@@ -107,10 +107,6 @@ module Bifrost
           socket.close("Not Authorized!")
         end
       end
-
-      if data["event"].to_s == "ping"
-        socket.send({event: "pong"}.to_json)
-      end
     end
 
     socket.on_pong do
