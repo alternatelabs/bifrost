@@ -46,7 +46,6 @@ On the client side open up a websocket and send an authentication message with t
 import ReconnectingWebSocket from "reconnectingwebsocket";
 
 let ws = new ReconnectingWebSocket(`${process.env.BIFROST_WSS_URL}/subscribe`); // URL your bifrost server is running on
-let pingInterval;
 
 // Step 1
 // ======
@@ -64,11 +63,6 @@ ws.onopen = function() {
     ws.send(JSON.stringify(msg));
 
     console.log("WS Connected");
-
-    // Send a ping every so often to keep the socket alive
-    pingInterval = setInterval(() => {
-      ws.send(JSON.stringify({ event: "ping" }));
-    }, 10000);
   });
 };
 
@@ -84,10 +78,6 @@ ws.onmessage = function(event) {
     case "subscribed": {
       const channelName = JSON.parse(msg.data).channel;
       console.log(`Subscribed to channel ${channelName}`);
-      break;
-    }
-    case "pong": {
-      // console.log("Bifrost pong");
       break;
     }
     default: {
@@ -108,7 +98,6 @@ ws.onmessage = function(event) {
 // Do some cleanup when the socket closes
 ws.onclose = function(event) {
   console.error("WS Closed", event);
-  clearInterval(pingInterval);
 };
 ```
 
@@ -136,9 +125,13 @@ if req.status > 206
 end
 ```
 
-### 🚀 You're done
+### You're done 🚀
 
 That's all you need to start broadcasting realtime events directly to clients in an authenticated manner. Despite the name, there is no planned support for bi-directional communication, it adds a lot of complications and for most apps it's simply not necessary.
+
+#### Ping Pong 🏓
+
+Bifröst server will send a ping to each socket every 15 seconds, if a pong hasn't been received after a further 15 seconds the socket will be closed.
 
 #### `GET /info.json`
 

@@ -17,10 +17,6 @@
     };
     ws.onopen = function(event) {
       ws.send(JSON.stringify(msg));
-
-      pingInterval = setInterval(() => {
-        ws.send(JSON.stringify({ event: "ping" }));
-      }, 5000);
     };
 
     ws.onmessage = function(event) {
@@ -29,7 +25,6 @@
 
     ws.onclose = function(event) {
       console.log("WS Closed", event);
-      clearInterval(pingInterval);
     };
   </script>
 </body>

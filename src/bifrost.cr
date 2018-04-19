@@ -79,6 +79,7 @@ module Bifrost
 
   ws "/subscribe" do |socket|
     puts "Socket connected".colorize(:green)
+    ponged = true
 
     socket.on_message do |message|
       puts message.colorize(:blue)
@@ -112,6 +113,10 @@ module Bifrost
       end
     end
 
+    socket.on_pong do
+      ponged = true
+    end
+
     # Remove clients from the list when it's closed
     socket.on_close do
       SOCKETS.each do |channel, set|
@@ -119,6 +124,29 @@ module Bifrost
           set.delete(socket)
 
           puts "Socket disconnected from #{channel}!".colorize(:yellow)
+        end
+      end
+    end
+
+    # Ping sockets every 15 seconds to keep them alive
+    spawn do
+      loop do
+        sleep 15
+
+        if ponged
+          puts "Socket ponged, pinging again!"
+          ponged = false
+        else
+          puts "Socket didn't respond to ping, disconnecting!".colorize(:red)
+          socket.close("Socket didn't respond to ping")
+          break
+        end
+
+        begin
+          socket.ping
+        rescue IO::Error
+          puts "Socket closed, stopping ping timer".colorize(:yellow)
+          break
         end
       end
     end
