@@ -32,7 +32,7 @@ Create a JWT that can be sent to the client side for your end user to connect to
 get "/api/bifrost-token" do
   authenticate_user!
   payload = { channels: ["user:#{current_user.id}", "global"] }
-  jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
+  jwt = JWT.encode(payload, ENV["JWT_SECRET"], JWT::Algorithm::HS512)
   { token: jwt }.to_json
 end
 ```
@@ -114,7 +114,7 @@ data = {
   },
   exp: Time.zone.now.to_i + 1.hour
 }
-jwt = JWT.encode(data, ENV["JWT_SECRET"], "HS512")
+jwt = JWT.encode(data, ENV["JWT_SECRET"], JWT::Algorithm::HS512)
 url = ENV.fetch("BIFROST_URL")
 url += "/broadcast"
 

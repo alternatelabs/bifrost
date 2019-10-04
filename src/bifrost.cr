@@ -22,7 +22,7 @@ module Bifrost
     if Kemal.config.env == "development"
       env.response.content_type = "text/html"
       allowed_channels = {channels: ["user:1"]}
-      test_token = JWT.encode(allowed_channels, ENV["JWT_SECRET"], "HS512")
+      test_token = JWT.encode(allowed_channels, ENV["JWT_SECRET"], JWT::Algorithm::HS512)
       render "src/views/test.ecr"
     else
       render_404
@@ -58,12 +58,12 @@ module Bifrost
       token = env.params.json["token"].as(String)
       payload = self.decode_jwt(token)
 
-      channel = payload["channel"].as(String)
+      channel = payload["channel"].as_s
       deliveries = 0
 
       if SOCKETS.has_key?(channel)
         SOCKETS[channel].each do |socket|
-          socket.send(payload["message"].as(Hash).to_json)
+          socket.send(payload["message"].as_h.to_json)
           deliveries += 1
         end
       end
@@ -92,8 +92,8 @@ module Bifrost
 
         begin
           payload = self.decode_jwt(token)
-          payload["channels"].as(Array).each do |channel|
-            channel = channel.as(String)
+          payload["channels"].as_a.each do |channel|
+            channel = channel.as_s
             if SOCKETS.has_key?(channel)
               SOCKETS[channel] << socket
             else
@@ -149,7 +149,7 @@ module Bifrost
   end
 
   def self.decode_jwt(token : String)
-    payload, header = JWT.decode(token, ENV["JWT_SECRET"], "HS512")
+    payload, header = JWT.decode(token, ENV["JWT_SECRET"], JWT::Algorithm::HS512)
     payload
   end
 end
