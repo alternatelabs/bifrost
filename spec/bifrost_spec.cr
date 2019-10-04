@@ -23,9 +23,9 @@ describe Bifrost do
     context "invalid JWT" do
       it "returns bad request" do
         payload = {
-          exp: Time.now.epoch + 3600, # 1 hour
+          exp: Time.local.to_unix + 3600, # 1 hour
         }
-        jwt = JWT.encode(payload, "bad-secret-key", "HS512")
+        jwt = JWT.encode(payload, "bad-secret-key", JWT::Algorithm::HS512)
         post "/broadcast", headers: HTTP::Headers{"Content-Type" => "application/json"}, body: {token: jwt}.to_json
 
         response.status_code.should eq 400
@@ -37,9 +37,9 @@ describe Bifrost do
     context "expired JWT" do
       it "returns bad request" do
         payload = {
-          exp: Time.now.epoch - 10,
+          exp: Time.local.to_unix - 10,
         }
-        jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
+        jwt = JWT.encode(payload, ENV["JWT_SECRET"], JWT::Algorithm::HS512)
         post "/broadcast", headers: HTTP::Headers{"Content-Type" => "application/json"}, body: {token: jwt}.to_json
 
         response.status_code.should eq 400
@@ -51,11 +51,11 @@ describe Bifrost do
     context "valid JWT" do
       it "returns success" do
         payload = {
-          exp:     Time.now.epoch + 3600,
+          exp:     Time.local.to_unix + 3600,
           channel: "user:12",
           message: {test: "test"}.to_json,
         }
-        jwt = JWT.encode(payload, ENV["JWT_SECRET"], "HS512")
+        jwt = JWT.encode(payload, ENV["JWT_SECRET"], JWT::Algorithm::HS512)
         post "/broadcast", headers: HTTP::Headers{"Content-Type" => "application/json"}, body: {token: jwt}.to_json
 
         response.status_code.should eq 200
